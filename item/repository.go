@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"../util"
+	"github.com/Zoraone/order-app-api/util"
 
 	"go.mongodb.org/mongo-driver/bson"
 )

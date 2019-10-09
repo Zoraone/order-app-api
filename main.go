@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"os"
 
-	"./item"
-	"./order"
-	"./store"
+	"github.com/Zoraone/order-app-api/item"
+	"github.com/Zoraone/order-app-api/order"
+	"github.com/Zoraone/order-app-api/store"
 
 	"github.com/gorilla/mux"
 )
