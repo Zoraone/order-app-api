@@ -1,0 +1,20 @@
+{
+  "uuid": "a7345c0b-ad1f-49b2-b2d3-f9836948e6ac",
+  "title": "McDonald's® (Grey Lynn)",
+  "sections": [
+    {
+      "uuid": "b1d7a2d6-bb25-402b-90b7-7ebe0df31f88",
+      "title": "Lunch & Dinner",
+      "subtitle": "10:20 AM – 10:19 PM",
+      "items": [
+        {
+          "uuid": "5346b96e-e710-47ff-81b6-568e0633650f",
+          "title": "Big Mac® Combo",
+          "description": null,
+          "price": 1200,
+          "imageUrl": "https://d1ralsognjng37.cloudfront.net/6ee7ab51-8372-4a8c-8b6d-f9505a44ece3"
+        }
+      ]
+    }
+  ]
+}
