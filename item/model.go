@@ -27,3 +27,7 @@ type Option struct {
 	MaxPermitted    int    `json:"maxPermitted"`
 	IsSoldOut       bool   `json:"isSoldOut"`
 }
+
+type AddResponse struct {
+	NewId interface{} `json:"newId"`
+}

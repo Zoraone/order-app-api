@@ -43,3 +43,7 @@ type Option struct {
 	Title string `json:"title"`
 	Price int    `json:"price"`
 }
+
+type AddResponse struct {
+	NewId interface{} `json:"newId"`
+}

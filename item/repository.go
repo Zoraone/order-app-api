@@ -13,15 +13,15 @@ type Repository struct {}
 
 const ITEM_COLLECTION = "items"
 
-func (r Repository) AddItem(item Item) interface{} {
+func (r Repository) AddItem(item Item) (interface{}, error) {
 	client := util.GetClient()
 	collection := client.Database(util.GetDBName()).Collection(ITEM_COLLECTION)
 	defer client.Disconnect(context.Background())
 	insertResult, err := collection.InsertOne(context.TODO(), item)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
-	return insertResult.InsertedID
+	return insertResult.InsertedID, nil
 }
 
 func (r Repository) GetItem(id string) Item {

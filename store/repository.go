@@ -13,15 +13,15 @@ type Repository struct{}
 
 const STORE_COLLECTION = "stores"
 
-func (r Repository) AddStore(store Store) interface{} {
+func (r Repository) AddStore(store Store) (interface{}, error) {
 	client := util.GetClient()
 	collection := client.Database(util.GetDBName()).Collection(STORE_COLLECTION)
 	defer client.Disconnect(context.Background())
 	insertResult, err := collection.InsertOne(context.TODO(), store)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
-	return insertResult.InsertedID
+	return insertResult.InsertedID, nil
 }
 
 func (r Repository) GetOneStore(id string) Store {
@@ -35,4 +35,17 @@ func (r Repository) GetOneStore(id string) Store {
 		log.Fatal(err)
 	}
 	return store
+}
+
+func (r Repository) UpdateStore(id string, store Store) int64 {
+	client := util.GetClient()
+	defer client.Disconnect(context.Background())
+	collection := client.Database(util.GetDBName()).Collection(STORE_COLLECTION)
+	filter := bson.D{{"_id", id}}
+	update := bson.D{{Key: "$set", Value: store}}
+	updatedResult, err := collection.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return updatedResult.ModifiedCount
 }
