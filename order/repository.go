@@ -15,38 +15,39 @@ type Repository struct{}
 const ORDER_COLLECTION = "orders"
 const CART_COLLECTION = "order_carts"
 
-func (r Repository) GetAllOrders() []Order {
+func (r Repository) GetAllOrders() ([]Order, error) {
 	var orders []Order
 	client := util.GetClient()
 	collection := client.Database(util.GetDBName()).Collection(ORDER_COLLECTION)
 	cur, err := collection.Find(context.TODO(), bson.D{})
 	if err != nil {
-		log.Fatal(err)
+		return orders, err
 	}
+	defer cur.Close(context.TODO())
 	for cur.Next(context.TODO()) {
 		var order Order
 		err = cur.Decode(&order)
 		if err != nil {
-			log.Fatal(err)
+			return orders, err
 		}
 		orders = append(orders, order)
 	}
-	return orders
+	return orders, nil
 }
 
-func (r Repository) AddOrder(order Order) interface{} {
+func (r Repository) AddOrder(order Order) (interface{}, error) {
 	client := util.GetClient()
 	collection := client.Database(util.GetDBName()).Collection(ORDER_COLLECTION)
 	defer client.Disconnect(context.Background())
 	order.Id = primitive.NewObjectID()
 	insertResult, err := collection.InsertOne(context.TODO(), order)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
-	return insertResult.InsertedID
+	return insertResult.InsertedID, nil
 }
 
-func (r Repository) GetOrder(id string) Order {
+func (r Repository) GetOrder(id string) (Order, error) {
 	client := util.GetClient()
 	var order Order
 	collection := client.Database(util.GetDBName()).Collection(ORDER_COLLECTION)
@@ -55,9 +56,9 @@ func (r Repository) GetOrder(id string) Order {
 	filter := bson.D{{"_id", objectId}}
 	err := collection.FindOne(context.TODO(), filter).Decode(&order)
 	if err != nil {
-		log.Fatal(err)
+		return Order{}, err
 	}
-	return order
+	return order, nil
 }
 
 // Not used
@@ -84,18 +85,18 @@ func (r Repository) DeleteOrder(id string) int64 {
 	return deleteResult.DeletedCount
 }
 
-func (r Repository) AddOrderCart(cart OrderCart) interface{} {
+func (r Repository) AddOrderCart(cart OrderCart) (interface{}, error) {
 	client := util.GetClient()
 	collection := client.Database(util.GetDBName()).Collection(CART_COLLECTION)
 	defer client.Disconnect(context.Background())
 	insertResult, err := collection.InsertOne(context.TODO(), cart)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
-	return insertResult.InsertedID
+	return insertResult.InsertedID, nil
 }
 
-func (r Repository) GetCartsInOrder(orderId string) []OrderCart {
+func (r Repository) GetCartsInOrder(orderId string) ([]OrderCart, error) {
 	client := util.GetClient()
 
 	collection := client.Database(util.GetDBName()).Collection(CART_COLLECTION)
@@ -103,17 +104,18 @@ func (r Repository) GetCartsInOrder(orderId string) []OrderCart {
 	filter := bson.D{{"orderid", orderId}}
 	cur, err := collection.Find(context.TODO(), filter)
 	if err != nil {
-		log.Fatal(err)
+		return []OrderCart{}, err
 	}
+	defer cur.Close(context.TODO())
 
 	var carts []OrderCart
 	for cur.Next(context.TODO()) {
 		var cart OrderCart
 		err = cur.Decode(&cart)
 		if err != nil {
-			log.Fatal(err)
+			return carts, err
 		}
 		carts = append(carts, cart)
 	}
-	return carts
+	return carts, nil
 }

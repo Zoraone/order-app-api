@@ -33,3 +33,11 @@ type OrderCartOption struct {
 	Title string `json:"title"`
 	Price int    `json:"price"`
 }
+
+type AddOrderResponse struct {
+	NewId interface{} `json:"newId"`
+}
+
+type AddCartResponse struct {
+	NewId interface{} `json:"newId"`
+}
