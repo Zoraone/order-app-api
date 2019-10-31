@@ -2,7 +2,6 @@ package store
 
 import (
 	"context"
-	"log"
 
 	"github.com/Zoraone/order-app-api/util"
 
@@ -24,7 +23,7 @@ func (r Repository) AddStore(store Store) (interface{}, error) {
 	return insertResult.InsertedID, nil
 }
 
-func (r Repository) GetOneStore(id string) Store {
+func (r Repository) GetOneStore(id string) (Store, error) {
 	client := util.GetClient()
 	var store Store
 	collection := client.Database(util.GetDBName()).Collection(STORE_COLLECTION)
@@ -32,20 +31,20 @@ func (r Repository) GetOneStore(id string) Store {
 	filter := bson.D{{"_id", id}}
 	err := collection.FindOne(context.TODO(), filter).Decode(&store)
 	if err != nil {
-		log.Fatal(err)
+		return Store{}, err
 	}
-	return store
+	return store, nil
 }
 
-func (r Repository) UpdateStore(id string, store Store) int64 {
+func (r Repository) UpdateStore(id string, store Store) error {
 	client := util.GetClient()
 	defer client.Disconnect(context.Background())
 	collection := client.Database(util.GetDBName()).Collection(STORE_COLLECTION)
 	filter := bson.D{{"_id", id}}
 	update := bson.D{{Key: "$set", Value: store}}
-	updatedResult, err := collection.UpdateOne(context.TODO(), filter, update)
+	_, err := collection.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
-	return updatedResult.ModifiedCount
+	return nil
 }
