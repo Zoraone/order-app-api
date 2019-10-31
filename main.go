@@ -29,6 +29,7 @@ func main() {
 
 	router.HandleFunc("/api/store/add/", storeController.AddStore).Methods("POST")
 	router.HandleFunc("/api/store/get/{id}", storeController.GetStore).Methods("GET")
+	router.HandleFunc("/api/store/update/{id}", storeController.UpdateStore).Methods("POST")
 
 	router.HandleFunc("/api/item/add/", itemController.AddItem).Methods("POST")
 	router.HandleFunc("/api/item/get/{id}", itemController.GetItem).Methods("GET")
