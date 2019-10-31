@@ -32,6 +32,7 @@ func main() {
 
 	router.HandleFunc("/api/item/add/", itemController.AddItem).Methods("POST")
 	router.HandleFunc("/api/item/get/{id}", itemController.GetItem).Methods("GET")
+	router.HandleFunc("/api/item/update/{id}", itemController.UpdateItem).Methods("POST")
 
 	log.Fatal(http.ListenAndServe(getPort(), corsMiddleware(router)))
 }

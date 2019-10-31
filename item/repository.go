@@ -2,7 +2,6 @@ package item
 
 import (
 	"context"
-	"log"
 
 	"github.com/Zoraone/order-app-api/util"
 
@@ -24,7 +23,7 @@ func (r Repository) AddItem(item Item) (interface{}, error) {
 	return insertResult.InsertedID, nil
 }
 
-func (r Repository) GetItem(id string) Item {
+func (r Repository) GetItem(id string) (Item, error) {
 	client := util.GetClient()
 	var item Item
 	collection := client.Database(util.GetDBName()).Collection(ITEM_COLLECTION)
@@ -32,7 +31,20 @@ func (r Repository) GetItem(id string) Item {
 	filter := bson.D{{"_id", id}}
 	err := collection.FindOne(context.TODO(), filter).Decode(&item)
 	if err != nil {
-		log.Fatal(err)
+		return Item{}, err
 	}
-	return item
+	return item, nil
+}
+
+func (r Repository) UpdateItem(id string, item Item) error {
+	client := util.GetClient()
+	defer client.Disconnect(context.Background())
+	collection := client.Database(util.GetDBName()).Collection(ITEM_COLLECTION)
+	filter := bson.D{{"_id", id}}
+	update := bson.D{{Key: "$set", Value: item}}
+	_, err := collection.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		return err
+	}
+	return nil
 }
