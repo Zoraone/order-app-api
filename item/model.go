@@ -1,12 +1,12 @@
 package item
 
 type Item struct {
-	Uuid              string          `json:"uuid" bson:"_id"`
-	Title             string          `json:"title"`
-	Price             int             `json:"price"`
-	ItemDescription   string          `json:"itemDescription"`
-	ImageUrl          string          `json:"imageUrl"`
-	CustomizationList []Customization `json:"customizationList"`
+	Uuid               string          `json:"uuid" bson:"_id"`
+	Title              string          `json:"title"`
+	Price              int             `json:"price"`
+	ItemDescription    string          `json:"itemDescription"`
+	ImageUrl           string          `json:"imageUrl"`
+	CustomizationsList []Customization `json:"customizationsList"`
 }
 
 type Customization struct {
